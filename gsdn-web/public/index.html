@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Hello BreadBlog"
+    />
+    <title>BreadBlog</title>
+  </head>
+  <body>
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
+    <div id="root"></div>
+    <canvas id="background" style="height: 100%;width: 100%"></canvas>
+  </body>
+
+  <script>
+    // 适配大屏
+    const baseSize = 16;
+
+    (function setRem() {
+      const scale = document.documentElement.clientWidth / 1500
+      if (scale >= 0.9){
+        document.documentElement.style.fontSize = baseSize * scale + 'px'
+      }
+    })()
+
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/particlesjs/2.2.2/particles.min.js"></script>
+</html>
