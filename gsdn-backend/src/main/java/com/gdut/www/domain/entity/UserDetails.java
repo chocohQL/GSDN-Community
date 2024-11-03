@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -14,13 +15,15 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class UserDetails {
     private Long id;
-    private String username;
-    private String password;
-    private String avatar;
-    private String intro;
-    private String email;
+    private Long userId;
+    private LocalDate birthday;
+    private String orgName;
+    private Integer orgType;
+    private String orgNumber;
+    private Integer orgIdentityStatus;
+    private String jsonInfo;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
 }

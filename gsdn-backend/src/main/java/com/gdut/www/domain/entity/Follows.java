@@ -14,13 +14,9 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class Follows {
     private Long id;
-    private String username;
-    private String password;
-    private String avatar;
-    private String intro;
-    private String email;
-    private LocalDateTime createTime;
-    private LocalDateTime updateTime;
+    private Long userId;
+    private Long followsId;
+    private LocalDateTime time;
 }

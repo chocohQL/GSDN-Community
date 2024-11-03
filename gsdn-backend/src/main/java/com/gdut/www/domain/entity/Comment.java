@@ -14,13 +14,13 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class Comment {
     private Long id;
-    private String username;
-    private String password;
-    private String avatar;
-    private String intro;
-    private String email;
+    private Long articleId;
+    private Long userId;
+    private Long parentId;
+    private String content;
+    private Integer status;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
 }
