@@ -7,9 +7,11 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gdut.www.common.ResponseMsg;
 import com.gdut.www.domain.dto.UserForm;
+import com.gdut.www.domain.entity.Follows;
 import com.gdut.www.domain.entity.User;
 import com.gdut.www.domain.vo.UserInfo;
 import com.gdut.www.exception.GlobalException;
+import com.gdut.www.mapper.FollowsMapper;
 import com.gdut.www.mapper.UserMapper;
 import com.gdut.www.service.FileService;
 import com.gdut.www.service.UserService;
@@ -17,6 +19,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author chocoh
@@ -28,7 +34,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     private UserMapper userMapper;
     @Autowired
     private FileService fileService;
-
+    @Autowired
+    private FollowsMapper followsMapper;
     @Override
     public String login(String username, String password) {
         User user = getUserByUsername(username);
@@ -102,7 +109,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public UserInfo getUserInfo(User user) {
-        UserInfo userInfo = new UserInfo();
+        UserInfo userInfo = UserInfo.builder()
+                .fans(followsMapper.selectCount(new LambdaQueryWrapper<Follows>()
+                        .eq(Follows::getFollowsId, user.getId())))
+                .follows(followsMapper.selectCount(new LambdaQueryWrapper<Follows>()
+                        .eq(Follows::getUserId, user.getId())))
+                .build();
         BeanUtils.copyProperties(user, userInfo);
         return userInfo;
     }
@@ -114,5 +126,58 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     private User getUserByUsername(String username) {
         return userMapper.selectOne(new LambdaQueryWrapper<User>().eq(User::getUsername, username));
+    }
+
+    @Override
+    public void follow(Long userId) {
+        Follows follows = getFollows(userId);
+        if (follows == null) {
+            followsMapper.insert(Follows.builder()
+                    .userId(StpUtil.getLoginIdAsLong())
+                    .followsId(userId)
+                    .build());
+        } else {
+            followsMapper.deleteById(follows.getId());
+        }
+    }
+
+    @Override
+    public boolean isFollow(Long userId) {
+        return getFollows(userId) != null;
+    }
+
+    @Override
+    public List<UserInfo> fans(Long userId) {
+        List<Follows> follows = followsMapper.selectList(new LambdaQueryWrapper<Follows>().eq(Follows::getFollowsId, userId));
+        List<Long> userIds = follows.stream().map(Follows::getUserId).collect(Collectors.toList());
+        List<UserInfo> userInfos = new ArrayList<>();
+        userIds.forEach(id -> userInfos.add(getUserInfo(getById(id))));
+        return userInfos;
+    }
+
+    @Override
+    public List<UserInfo> follows(Long userId) {
+        List<Follows> follows = followsMapper.selectList(new LambdaQueryWrapper<Follows>().eq(Follows::getUserId, userId));
+        List<Long> userIds = follows.stream().map(Follows::getFollowsId).collect(Collectors.toList());
+        List<UserInfo> userInfos = new ArrayList<>();
+        userIds.forEach(id -> userInfos.add(getUserInfo(getById(id))));
+        return userInfos;
+    }
+
+    @Override
+    public List<UserInfo> search(String key) {
+        List<UserInfo> userInfos = new ArrayList<>();
+        userMapper.selectList(new LambdaQueryWrapper<User>()
+                        .like(User::getUsername, key)
+                        .or()
+                        .like(User::getIntro, key))
+                .forEach(user -> userInfos.add(getUserInfo(user)));
+        return userInfos;
+    }
+
+    private Follows getFollows(Long userId) {
+        return followsMapper.selectOne(new LambdaQueryWrapper<Follows>()
+                .eq(Follows::getFollowsId, userId)
+                .eq(Follows::getUserId, StpUtil.getLoginIdAsLong()));
     }
 }

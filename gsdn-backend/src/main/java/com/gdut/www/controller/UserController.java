@@ -7,6 +7,7 @@ import com.gdut.www.domain.dto.UserForm;
 import com.gdut.www.domain.entity.User;
 import com.gdut.www.domain.model.Response;
 import com.gdut.www.service.UserService;
+import com.gdut.www.utils.PageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -69,5 +70,32 @@ public class UserController {
     @GetMapping("/get")
     public Response getUser(@RequestParam("username") String username) {
         return Response.success(userService.getUserInfo(userService.getOne(new LambdaQueryWrapper<User>().eq(User::getUsername, username))));
+    }
+    @PostMapping("/follow")
+    public Response follow(@RequestParam("userId") Long userId) {
+        userService.follow(userId);
+        return Response.success();
+    }
+
+    @GetMapping("/isFollow")
+    public Response isFollow(@RequestParam("userId") Long userId) {
+        return Response.success(userService.isFollow(userId));
+    }
+
+    @GetMapping("/fans")
+    public Response fans(@RequestParam("userId") Long userId) {
+        return Response.success(userService.fans(userId));
+    }
+
+    @GetMapping("/follows")
+    public Response follows(@RequestParam("userId") Long userId) {
+        return Response.success(userService.follows(userId));
+    }
+
+    @GetMapping("/search")
+    public Response search(@RequestParam("key") String key,
+                           @RequestParam("page") Integer page,
+                           @RequestParam("pageSize") Integer pageSize) {
+        return Response.success(PageUtil.getPageBean(userService.search(key), page, pageSize));
     }
 }

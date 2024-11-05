@@ -6,6 +6,8 @@ import com.gdut.www.domain.dto.UserForm;
 import com.gdut.www.domain.entity.User;
 import com.gdut.www.domain.vo.UserInfo;
 
+import java.util.List;
+
 /**
  * @author chocoh
  */
@@ -23,4 +25,14 @@ public interface UserService extends IService<User> {
     User forgetPassword(String username, String password);
 
     UserInfo getUserInfo(User user);
+
+    void follow(Long userId);
+
+    boolean isFollow(Long userId);
+
+    List<UserInfo> fans(Long userId);
+
+    List<UserInfo> follows(Long userId);
+
+    List<UserInfo> search(String key);
 }

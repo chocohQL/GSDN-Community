@@ -23,7 +23,7 @@ public class UserDetails {
     private Integer orgType;
     private String orgNumber;
     private Integer orgIdentityStatus;
-    private String jsonInfo;
+    private String extraInfo;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
 }
