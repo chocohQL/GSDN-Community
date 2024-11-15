@@ -60,3 +60,4 @@ dist-ssr
 
 buileder
 /gsdn-backend/src/main/resources/application-dev.yml
+/gsdn-backend/src/main/resources/application-local.yml
