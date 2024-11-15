@@ -22,7 +22,16 @@ public class SaTokenConfigure implements WebMvcConfigurer {
                 .notMatch(
                         "/user/login",
                         "/user/register",
-                        "/user/forgetPassword"
+                        "/user/forgetPassword",
+                        "/user/search",
+                        "/user/{id}",
+                        "/article/detail",
+                        "/article/getTypes",
+                        "/article/hot",
+                        "/article/search",
+                        "/article/all",
+                        "/comment/first",
+                        "/comment/multi"
                 ).check(r -> StpUtil.checkLogin()))).addPathPatterns("/**");
     }
 
