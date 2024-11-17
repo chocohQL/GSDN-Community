@@ -1,7 +1,7 @@
 package com.gdut.www.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
-import com.gdut.www.domain.dto.ArticleForm;
+import com.gdut.www.domain.dto.ArticleReq;
 import com.gdut.www.domain.entity.Article;
 import com.gdut.www.domain.model.Response;
 import com.gdut.www.service.ArticleService;
@@ -23,22 +23,22 @@ public class ArticleController {
     private ArticleService articleService;
 
     @PostMapping("/post")
-    public Response post(@RequestBody @Validated ArticleForm articleForm) {
+    public Response post(@RequestBody @Validated ArticleReq articleReq) {
         Article article = Article.builder()
                 .userId(StpUtil.getLoginIdAsLong())
-                .images(String.join(",", articleForm.getImg()))
+                .images(String.join(",", articleReq.getImg()))
                 .build();
-        BeanUtils.copyProperties(articleForm, article);
+        BeanUtils.copyProperties(articleReq, article);
         articleService.save(article);
         return Response.success();
     }
 
     @PostMapping("/update")
-    public Response update(@RequestBody @Validated ArticleForm articleForm) {
-        Article article = articleService.getById(articleForm.getId());
+    public Response update(@RequestBody @Validated ArticleReq articleReq) {
+        Article article = articleService.getById(articleReq.getId());
         if (article.getUserId().equals(StpUtil.getLoginIdAsLong())) {
-            BeanUtils.copyProperties(articleForm, article);
-            article.setImages(String.join(",", articleForm.getImg()));
+            BeanUtils.copyProperties(articleReq, article);
+            article.setImages(String.join(",", articleReq.getImg()));
             article.setUpdateTime(LocalDateTime.now());
             articleService.updateById(article);
             return Response.success();

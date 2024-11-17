@@ -13,7 +13,7 @@ import static com.gdut.www.common.ResponseMsg.VALIDATE_USERNAME;
  * @author chocoh
  */
 @Data
-public class UserForm {
+public class UserReq {
     @Size(min = 1, max = 16, message = VALIDATE_USERNAME)
     private String username;
     @Pattern(regexp = PATTERN_PASSWORD, message = VALIDATE_PASSWORD)

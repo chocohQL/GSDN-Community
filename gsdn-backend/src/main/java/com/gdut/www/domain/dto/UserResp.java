@@ -1,4 +1,4 @@
-package com.gdut.www.domain.vo;
+package com.gdut.www.domain.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserInfo {
+public class UserResp {
     private Long id;
     private String username;
     private String avatar;

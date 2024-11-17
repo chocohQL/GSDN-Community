@@ -6,10 +6,10 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gdut.www.common.ResponseMsg;
-import com.gdut.www.domain.dto.UserForm;
+import com.gdut.www.domain.dto.UserReq;
 import com.gdut.www.domain.entity.Follows;
 import com.gdut.www.domain.entity.User;
-import com.gdut.www.domain.vo.UserInfo;
+import com.gdut.www.domain.dto.UserResp;
 import com.gdut.www.exception.GlobalException;
 import com.gdut.www.mapper.FollowsMapper;
 import com.gdut.www.mapper.UserMapper;
@@ -64,7 +64,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public User modifyUserInfo(UserForm user) {
+    public User modifyUserInfo(UserReq user) {
         User me = me();
         if (StringUtils.isNotEmpty(user.getAvatar())) {
             fileService.deleteImg(me.getAvatar());
@@ -85,7 +85,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public User modifyPassword(UserForm user) {
+    public User modifyPassword(UserReq user) {
         if (StringUtils.isNotEmpty(user.getPassword())) {
             User me = me();
             me.setPassword(DigestUtil.bcrypt(user.getPassword()));
@@ -108,15 +108,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public UserInfo getUserInfo(User user) {
-        UserInfo userInfo = UserInfo.builder()
+    public UserResp getUserInfo(User user) {
+        UserResp userResp = UserResp.builder()
                 .fans(followsMapper.selectCount(new LambdaQueryWrapper<Follows>()
                         .eq(Follows::getFollowsId, user.getId())))
                 .follows(followsMapper.selectCount(new LambdaQueryWrapper<Follows>()
                         .eq(Follows::getUserId, user.getId())))
                 .build();
-        BeanUtils.copyProperties(user, userInfo);
-        return userInfo;
+        BeanUtils.copyProperties(user, userResp);
+        return userResp;
     }
 
     @Override
@@ -147,32 +147,32 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public List<UserInfo> fans(Long userId) {
+    public List<UserResp> fans(Long userId) {
         List<Follows> follows = followsMapper.selectList(new LambdaQueryWrapper<Follows>().eq(Follows::getFollowsId, userId));
         List<Long> userIds = follows.stream().map(Follows::getUserId).collect(Collectors.toList());
-        List<UserInfo> userInfos = new ArrayList<>();
-        userIds.forEach(id -> userInfos.add(getUserInfo(getById(id))));
-        return userInfos;
+        List<UserResp> userRespList = new ArrayList<>();
+        userIds.forEach(id -> userRespList.add(getUserInfo(getById(id))));
+        return userRespList;
     }
 
     @Override
-    public List<UserInfo> follows(Long userId) {
+    public List<UserResp> follows(Long userId) {
         List<Follows> follows = followsMapper.selectList(new LambdaQueryWrapper<Follows>().eq(Follows::getUserId, userId));
         List<Long> userIds = follows.stream().map(Follows::getFollowsId).collect(Collectors.toList());
-        List<UserInfo> userInfos = new ArrayList<>();
-        userIds.forEach(id -> userInfos.add(getUserInfo(getById(id))));
-        return userInfos;
+        List<UserResp> userRespList = new ArrayList<>();
+        userIds.forEach(id -> userRespList.add(getUserInfo(getById(id))));
+        return userRespList;
     }
 
     @Override
-    public List<UserInfo> search(String key) {
-        List<UserInfo> userInfos = new ArrayList<>();
+    public List<UserResp> search(String key) {
+        List<UserResp> userRespList = new ArrayList<>();
         userMapper.selectList(new LambdaQueryWrapper<User>()
                         .like(User::getUsername, key)
                         .or()
                         .like(User::getIntro, key))
-                .forEach(user -> userInfos.add(getUserInfo(user)));
-        return userInfos;
+                .forEach(user -> userRespList.add(getUserInfo(user)));
+        return userRespList;
     }
 
     private Follows getFollows(Long userId) {

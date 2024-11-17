@@ -13,4 +13,7 @@ public class ResponseMsg {
 
     public static final String VALIDATE_USERNAME = "用户名必须为1到16位字符";
     public static final String VALIDATE_PASSWORD = "密码必须为6到16位数字或字母";
+
+    public static final String AI_CONVERSATION_NOT_EXISTS = "对话不存在!";
+    public static final String AI_GENERATE_ERROR = "对话生成异常!";
 }

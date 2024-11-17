@@ -8,7 +8,7 @@ import com.gdut.www.domain.entity.Article;
 import com.gdut.www.domain.entity.ArticleType;
 import com.gdut.www.domain.entity.Collected;
 import com.gdut.www.domain.entity.Liked;
-import com.gdut.www.domain.vo.ArticleDetail;
+import com.gdut.www.domain.dto.ArticleResp;
 import com.gdut.www.mapper.ArticleMapper;
 import com.gdut.www.mapper.ArticleTypeMapper;
 import com.gdut.www.mapper.CollectedMapper;
@@ -41,9 +41,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     private ArticleMapper articleMapper;
 
     @Override
-    public ArticleDetail detail(Article article) {
-        ArticleDetail articleDetail = ArticleDetail.builder()
-                .userInfo(userService.getUserInfo(userService.getById(article.getUserId())))
+    public ArticleResp detail(Article article) {
+        ArticleResp articleResp = ArticleResp.builder()
+                .userResp(userService.getUserInfo(userService.getById(article.getUserId())))
                 .img(StringUtils.isNotBlank(article.getImages()) ?
                         Arrays.asList(article.getImages().split(",")) : new ArrayList<>())
                 .collected(collectedMapper.selectCount(new LambdaQueryWrapper<Collected>()
@@ -51,8 +51,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
                 .liked(likedMapper.selectCount(new LambdaQueryWrapper<Liked>()
                         .eq(Liked::getArticleId, article.getId())))
                 .build();
-        BeanUtils.copyProperties(article, articleDetail);
-        return articleDetail;
+        BeanUtils.copyProperties(article, articleResp);
+        return articleResp;
     }
 
     @Override
@@ -87,7 +87,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     }
 
     @Override
-    public List<ArticleDetail> related(String type) {
+    public List<ArticleResp> related(String type) {
         long id = StpUtil.getLoginIdAsLong();
         List<Long> ids;
         if ("like".equals(type)) {
@@ -101,14 +101,14 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         } else {
             return null;
         }
-        List<ArticleDetail> articleDetails = new ArrayList<>();
-        ids.forEach(i -> articleDetails.add(detail(getById(i))));
-        return articleDetails;
+        List<ArticleResp> articleRespList = new ArrayList<>();
+        ids.forEach(i -> articleRespList.add(detail(getById(i))));
+        return articleRespList;
     }
 
     @Override
-    public List<ArticleDetail> search(String key) {
-        List<ArticleDetail> articleDetails = new ArrayList<>();
+    public List<ArticleResp> search(String key) {
+        List<ArticleResp> articleRespList = new ArrayList<>();
         articleMapper.selectList(new LambdaQueryWrapper<Article>()
                         .like(Article::getTitle, key)
                         .or()
@@ -117,30 +117,30 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
                         .like(Article::getType, key)
                         .or()
                         .like(Article::getSummary, key))
-                .forEach(article -> articleDetails.add(detail(article)));
-        return articleDetails;
+                .forEach(article -> articleRespList.add(detail(article)));
+        return articleRespList;
     }
 
     @Override
-    public List<ArticleDetail> all() {
+    public List<ArticleResp> all() {
         List<Article> articles = list();
-        List<ArticleDetail> articleDetails = new ArrayList<>();
-        articles.forEach(article -> articleDetails.add(detail(article)));
-        return articleDetails;
+        List<ArticleResp> articleRespList = new ArrayList<>();
+        articles.forEach(article -> articleRespList.add(detail(article)));
+        return articleRespList;
     }
 
     @Override
-    public List<ArticleDetail> me() {
+    public List<ArticleResp> me() {
         return all().stream().filter(i -> i.getUserId().equals(StpUtil.getLoginIdAsLong())).collect(Collectors.toList());
     }
 
     @Override
-    public List<ArticleDetail> user(Long userId) {
+    public List<ArticleResp> user(Long userId) {
         return all().stream().filter(i -> i.getUserId().equals(userId)).collect(Collectors.toList());
     }
 
     @Override
-    public List<ArticleDetail> type(String type) {
+    public List<ArticleResp> type(String type) {
         return all().stream().filter(i -> type.equals(i.getType())).collect(Collectors.toList());
     }
 

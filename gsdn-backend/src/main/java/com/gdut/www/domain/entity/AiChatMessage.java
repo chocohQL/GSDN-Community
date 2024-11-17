@@ -1,4 +1,4 @@
-package com.gdut.www.domain.vo;
+package com.gdut.www.domain.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,27 +6,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
-/**
- * @author chocoh
- */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ArticleDetail {
+public class AiChatMessage {
     private Long id;
-    private Long userId;
-    private String title;
+    private Long conversationId;
+    private Long replyId;
     private String type;
-    private List<String> img;
+    private Long userId;
     private String content;
-    private String summary;
-    private Long collected;
-    private Long liked;
-    private Integer status;
-    private UserInfo userInfo;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
 }

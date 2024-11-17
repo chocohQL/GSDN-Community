@@ -2,9 +2,9 @@ package com.gdut.www.service;
 
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.gdut.www.domain.dto.UserForm;
+import com.gdut.www.domain.dto.UserReq;
 import com.gdut.www.domain.entity.User;
-import com.gdut.www.domain.vo.UserInfo;
+import com.gdut.www.domain.dto.UserResp;
 
 import java.util.List;
 
@@ -16,23 +16,23 @@ public interface UserService extends IService<User> {
 
     User register(String username, String password);
 
-    User modifyUserInfo(UserForm user);
+    User modifyUserInfo(UserReq user);
 
-    User modifyPassword(UserForm user);
+    User modifyPassword(UserReq user);
 
     User me();
 
     User forgetPassword(String username, String password);
 
-    UserInfo getUserInfo(User user);
+    UserResp getUserInfo(User user);
 
     void follow(Long userId);
 
     boolean isFollow(Long userId);
 
-    List<UserInfo> fans(Long userId);
+    List<UserResp> fans(Long userId);
 
-    List<UserInfo> follows(Long userId);
+    List<UserResp> follows(Long userId);
 
-    List<UserInfo> search(String key);
+    List<UserResp> search(String key);
 }

@@ -14,7 +14,7 @@ import static com.gdut.www.common.ResponseMsg.VALIDATE_USERNAME;
  * @author chocoh
  */
 @Data
-public class AuthForm {
+public class AuthReq {
     @NotNull
     @Size(min = 1, max = 16, message = VALIDATE_USERNAME)
     private String username;

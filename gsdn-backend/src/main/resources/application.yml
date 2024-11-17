@@ -15,7 +15,7 @@ spring:
     port: 6379
     password: password
   profiles:
-    active: dev
+    active: local
 
 mybatis-plus:
   global-config:
@@ -28,8 +28,8 @@ sa-token:
   token-name: token
   token-style: random-128
   is-read-cookie: true
+  is-read-header: true
   is-read-body: false
-  is-read-header: false
   is-concurrent: true
   is-share: true
   is-log: true

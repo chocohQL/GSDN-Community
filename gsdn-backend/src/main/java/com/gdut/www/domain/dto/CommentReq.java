@@ -3,21 +3,16 @@ package com.gdut.www.domain.dto;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
 /**
  * @author chocoh
  */
 @Data
-public class ArticleForm {
-    private Long id;
-    private List<String> img;
+public class CommentReq {
     @NotNull
-    private String title;
+    private Long articleId;
     @NotNull
-    private String type;
+    private Long parentId;
     @NotNull
     private String content;
-    @NotNull
-    private String summary;
 }

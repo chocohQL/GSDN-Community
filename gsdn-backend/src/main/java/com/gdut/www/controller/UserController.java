@@ -2,8 +2,8 @@ package com.gdut.www.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.gdut.www.domain.dto.AuthForm;
-import com.gdut.www.domain.dto.UserForm;
+import com.gdut.www.domain.dto.AuthReq;
+import com.gdut.www.domain.dto.UserReq;
 import com.gdut.www.domain.entity.User;
 import com.gdut.www.domain.model.Response;
 import com.gdut.www.service.UserService;
@@ -22,18 +22,18 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/register")
-    public Response register(@RequestBody @Validated AuthForm authForm) {
-        return Response.success(userService.register(authForm.getUsername(), authForm.getPassword()));
+    public Response register(@RequestBody @Validated AuthReq authReq) {
+        return Response.success(userService.register(authReq.getUsername(), authReq.getPassword()));
     }
 
     @PostMapping("/forgetPassword")
-    public Response forgetPassword(@RequestBody @Validated AuthForm authForm) {
-        return Response.success(userService.forgetPassword(authForm.getUsername(), authForm.getPassword()));
+    public Response forgetPassword(@RequestBody @Validated AuthReq authReq) {
+        return Response.success(userService.forgetPassword(authReq.getUsername(), authReq.getPassword()));
     }
 
     @PostMapping("/login")
-    public Response login(@RequestBody @Validated AuthForm authForm) {
-        return Response.success(userService.login(authForm.getUsername(), authForm.getPassword()));
+    public Response login(@RequestBody @Validated AuthReq authReq) {
+        return Response.success(userService.login(authReq.getUsername(), authReq.getPassword()));
     }
 
     @GetMapping("/isLogin")
@@ -48,12 +48,12 @@ public class UserController {
     }
 
     @PostMapping("/modify/userInfo")
-    public Response modifyUserInfo(@RequestBody @Validated UserForm user) {
+    public Response modifyUserInfo(@RequestBody @Validated UserReq user) {
         return Response.success(userService.modifyUserInfo(user));
     }
 
     @PostMapping("/modify/password")
-    public Response modifyPassword(@RequestBody @Validated UserForm user) {
+    public Response modifyPassword(@RequestBody @Validated UserReq user) {
         return Response.success(userService.modifyPassword(user));
     }
 

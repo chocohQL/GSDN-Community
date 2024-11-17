@@ -2,7 +2,7 @@ package com.gdut.www.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.gdut.www.domain.dto.CommentForm;
+import com.gdut.www.domain.dto.CommentReq;
 import com.gdut.www.domain.entity.Comment;
 import com.gdut.www.domain.model.Response;
 import com.gdut.www.service.CommentService;
@@ -24,8 +24,8 @@ public class CommentController {
     private CommentService commentService;
 
     @RequestMapping("/post")
-    public Response post(@RequestBody @Validated CommentForm commentForm) {
-        commentService.post(commentForm);
+    public Response post(@RequestBody @Validated CommentReq commentReq) {
+        commentService.post(commentReq);
         return Response.success();
     }
 
