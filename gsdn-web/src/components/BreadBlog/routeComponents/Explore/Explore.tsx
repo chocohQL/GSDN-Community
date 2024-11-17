@@ -35,7 +35,7 @@ export default function Explore() {
 
 	return (
 		<Fragment>
-			{!isError.status ?
+			{isError.status ?
 				<div className='explore-show-container'>
 					<div className='explore-major-container'>
 						<div className='explore-article-header'>

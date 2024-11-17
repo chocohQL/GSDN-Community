@@ -1,24 +1,19 @@
 /**
  * @description 用户注册与登录
  */
-import React, {useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {useNavigate} from "react-router-dom";
 import {Layout, message} from "antd";
 import background from '../../../../static/bg.jpg'
-import CustomStorage from "@utils/StorageUtils/CustomStorage";
-import UserOperationRequest from "@utils/RequestUtils/Operation/UserOperationRequest";
+// import CustomStorage from "@utils/StorageUtils/CustomStorage";
+// import UserOperationRequest from "@utils/RequestUtils/Operation/UserOperationRequest";
+import { isLogin,isRegister,getUserMessage,isLoginStatus } from '@utils/RequestAxios/api/account';
 const {Content} = Layout
 export default function Login(){
 	const navigator = useNavigate()
 
 	useEffect(() => {
-		setTimeout(async () => {
-			let check = await CustomStorage.checkAccount()
-			if (check.Ok){
-				message.success('您已经登录!')
-				navigator(-1)
-			}
-		},500)
+		isLoginPre();
 	},[])
 
 	let [userInfo,setUserInfo] = useState({username:'', password:''})
@@ -31,15 +26,29 @@ export default function Login(){
 		}
 	}
 
+	const isLoginPre=async ()=>{
+		let check = await isLoginStatus()
+		if (check.code==200&&check.data){
+			message.success('您已经登录!');
+			navigator('/user/home')
+		}
+	}
+
+	const setTokens=async function(token){
+		localStorage.setItem('token',token);
+		const res=await getUserMessage();
+		// console.log('meaasge',res,);
+		if(res.code==200){
+			localStorage.setItem('user',JSON.stringify(res.data));
+		}else{
+			message.error(res.msg);
+		}
+	}
+
 	let handleForm = () =>{
 		return async () => {
 
 			let {username,password} = userInfo
-			// console.log(location)
-			// console.log(userInfo);
-			
-
-
 			if (!(username && password)){
 				message.warn("请输入用户名和密码")
 				return;
@@ -49,26 +58,25 @@ export default function Login(){
 
 			switch (active){
 				case "login" :
-					navigator('/user/home')
 					// 进行登录接口请求
-					result = await UserOperationRequest.doLogin(username,password)
-					if (result.Ok){
+					result = await isLogin({username,password})
+					if (result.code==200){
 						message.success({content:'登录成功!',key:'loading'})
+						setTokens(result.data);
 						navigator('/user/home')
 					}else {
-						message.error({content:result.Msg,key:'loading'})
+						message.error({content:result.msg,key:'loading'})
 					}
-					////1212
 					break;
 				case "register" :
 					// 进行注册接口请求
-					result = await UserOperationRequest.doRegister(username,password)
-					if (result.Ok){
+					result = await isRegister({username,password})	
+					if (result.code==200){
 						message.success({content:"注册成功!",key:'loading'})
+						setTokens(result.data);
 						navigator('/user/home')
 					}else {
-						console.log(result)
-						message.error({content:result.Msg,key:'loading'})
+						message.error({content:result.msg,key:'loading'})
 					}
 					break;
 			}

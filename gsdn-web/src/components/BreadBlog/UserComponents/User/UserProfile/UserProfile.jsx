@@ -1,16 +1,42 @@
-import React from "react";
-import {Card, Divider, Input, Form, Button} from "antd";
-import { LeftOutlined } from "@ant-design/icons";
+import {Card, Divider, Input, Form, Button, Upload,message} from "antd";
+import { LeftOutlined, PlusOutlined } from "@ant-design/icons";
 import {useNavigate} from "react-router-dom";
 import CustomStorage from "@utils/StorageUtils/CustomStorage";
 import UploadAvatar from "./UploadAvatar";
+import TextArea from "antd/lib/input/TextArea";
+import { updateUserMessage,get } from "@utils/RequestAxios/api/account";
 
 const {User,pwd,Token} = CustomStorage.getAccount()
 
 export default function UserProfile(props) {
 	const navigator = useNavigate()
-	let onFinish = data => {
-		console.log(data)
+	let onFinish = async({avatar,username,intro}) => {
+		// console.log(data)
+		const token=localStorage.getItem('user');
+		let message12;
+		if (token) {
+		    message12=JSON.parse(token);
+		}
+		const res=await updateUserMessage({
+			avatar:avatar.length>0?avatar[0].response.data:User.avatar,
+			username:username||message12.username,
+			intro:intro||message12.intro
+		})
+		// console.log(res);
+		
+		if (res.code===200){
+			message.success({content:'修改成功!',key:'loading'});
+			localStorage.setItem('user',JSON.stringify(res.data));
+			navigator('/user/home')
+		}
+		
+	}
+
+	const normFile = (e) => {
+		if (Array.isArray(e)) {
+			return e;
+		}
+		return e && e.fileList;
 	}
 
 	return (
@@ -29,21 +55,11 @@ export default function UserProfile(props) {
 							onFinish={onFinish}
 							labelCol={{ span: 4 }}
 							wrapperCol={{ span: 20 }}
-							initialValues={{oldname:User,oldpwd:pwd}}
 						>
-							<Divider/>
-							<Form.Item
-								label="旧用户名"
-								name="oldname"
-								rules={[{ required: true, message: '请输入新的用户名!' }]}
-							>
-								<Input placeholder='请输入新的姓名' disabled/>
-							</Form.Item>
-							<Divider/>
 							<Form.Item
 								label="用户名"
-								name="name"
-								rules={[{ required: true, message: '请输入新的用户名!' },({getFieldValue }) => ({
+								name="username"
+								rules={[{ required: false, message: '请输入新的用户名!' },({getFieldValue }) => ({
 									validator(_, value) {
 										if (!value || getFieldValue('name') !== User) {
 											return Promise.resolve();
@@ -56,18 +72,9 @@ export default function UserProfile(props) {
 							</Form.Item>
 							<Divider/>
 							<Form.Item
-								label="旧密码"
-								name="oldpwd"
-								rules={[{ required: true, message: '请输入密码!' }]}
-							>
-								<Input placeholder='请输入新的密码'  disabled />
-							</Form.Item>
-
-							<Divider/>
-							<Form.Item
-								label="新密码"
-								name="newpwd"
-								rules={[{ required: true, message: '请输入密码!' },({getFieldValue }) => ({
+								label="用户介绍"
+								name="intro"
+								rules={[{ required: false, message: '请输入密码!' },({getFieldValue }) => ({
 									validator(_, value) {
 										if (!value || getFieldValue('newpwd') !== pwd) {
 											return Promise.resolve();
@@ -76,19 +83,43 @@ export default function UserProfile(props) {
 									},
 								})]}
 							>
-								<Input.Password placeholder='请输入新的密码' type='password'/>
+								<TextArea
+									showCount
+									maxLength={100}
+									placeholder="开始你的介绍"
+									style={{ height: 120, resize: 'none' }}
+								/>
+							</Form.Item>
+							<Divider/>
+							<Form.Item
+								label='头像'
+								getValueFromEvent={normFile}
+								name='avatar'
+							>
+								{/* <UploadAvatar token={Token}/> */}
+								<Upload 
+									action="/file/uploadImg" 
+									listType="picture-card"
+									maxCount={1}
+									// onPreview={handlePreview}
+								>
+									<button style={{ border: 0, background: 'none' }} type="button">
+									<PlusOutlined />
+									<div style={{ marginTop: 8 }}>Upload</div>
+									</button>
+								</Upload>
 							</Form.Item>
 							<Form.Item wrapperCol={{ offset: 4, span: 16 }}>
-								<Button type="ghost" htmlType="submit">
+								<Button type="primary" htmlType="submit">
 									更新信息
 								</Button>
 							</Form.Item>
 						</Form>
 
 					</div>
-					<div className='user-avatar-settings'>
+					{/* <div className='user-avatar-settings'>
 						<UploadAvatar token={Token}/>
-					</div>
+					</div> */}
 				</Card>
 			</div>
 

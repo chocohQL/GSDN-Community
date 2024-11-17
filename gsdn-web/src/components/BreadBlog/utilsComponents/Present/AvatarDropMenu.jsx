@@ -1,4 +1,4 @@
-import React, {Fragment, useState} from "react";
+import React, {Fragment, useCallback, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {Menu, Modal} from "antd";
 import {
@@ -11,15 +11,19 @@ import {
 	HomeOutlined
 } from "@ant-design/icons";
 import CustomStorage from "@utils/StorageUtils/CustomStorage";
+import { isLogOut } from "@utils/RequestAxios/api/account";
+import LocalStorage from "@utils/StorageUtils/localStorageUtils";
 
 export default function AvatarDropMenu() {
 
 	const navigator = useNavigate()
 	const [visible,setVisible] = useState(false)
-	let handleExit = () => {
-		CustomStorage.removeAccount()
+	const token=localStorage.getItem('token')||null;
+	let handleExit = async() => {
+		await isLogOut();
+		localStorage.clear()
 		setVisible(false)
-		navigator('/')
+		navigator('/');
 	}
 	return(
 		<Fragment>
@@ -33,8 +37,8 @@ export default function AvatarDropMenu() {
 				mask={false}
 				forceRender={false}
 			>
-				<p>确认要注销当前账户吗</p>
-				<p>注销后将会返回首页且当前用户操作不会保存</p>
+				<p>确认要退出当前账户吗</p>
+				<p>退出后将会返回首页且当前用户操作不会保存</p>
 			</Modal>
 			<Menu>
 				<Menu.Item key="toMd" onClick={() => navigator('/article/Edit/md')}>
@@ -68,7 +72,7 @@ export default function AvatarDropMenu() {
 					<span >回到首页</span>
 				</Menu.Item>
 				{
-					CustomStorage.getAccount().Token ?
+					token ?
 						<Menu.Item key='logout' onClick={() => setVisible(true)}>
 							<LogoutOutlined />
 							<span >退出</span>

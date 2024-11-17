@@ -8,18 +8,18 @@ export default function UserComponentsRouterGuard() {
 	const navigator = useNavigate()
 	const [pending,setPending] = useState(true	)
 	useEffect(() => {
-		CustomStorage.checkAccount().then(result => {
-			if (!result.Ok){
-				message.warn(result.Msg)
-				navigator('/account')
-			}else{
-				setPending(false)
-			}
-		})
+		// CustomStorage.checkAccount().then(result => {
+		// 	if (!result.Ok){
+		// 		message.warn(result.Msg)
+		// 		navigator('/account')
+		// 	}else{
+		// 		setPending(false)
+		// 	}
+		// })
 	},[])
 	return (
 		<Fragment>
-			{!pending ?  <Outlet/> : <Loading/>}
+			{pending ?  <Outlet/> : <Loading/>}
 		</Fragment>
 	);
 }

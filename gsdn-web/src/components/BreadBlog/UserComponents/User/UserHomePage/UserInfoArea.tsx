@@ -8,6 +8,7 @@ import CustomStorage from "@utils/StorageUtils/CustomStorage";
 import {beforeUpload} from "@utils/PresentUtils/ImgUploadUtil";
 import getDefaultUrlValue from "@utils/PresentUtils/getDefaultUrlValue";
 import type {UploadChangeParam, UploadFile} from 'antd/es/upload/interface';
+import imgURL from '../../../../../imgs/0505.gif_wh860.gif'
 const {User,Level} = CustomStorage.getAccount()
 function UserInfoArea(){
 	const navigator = useNavigate()
@@ -26,7 +27,7 @@ function UserInfoArea(){
 			</div>
 			<div className='user-info-container shangshou'>
 				<UserLevel user={User} level={Level}/>
-				<Button type='text' shape='circle' icon={<EditOutlined/>} key="edit-user-info" onClick={() => navigator('/user/profile')}/>
+				<Button type='primary' shape='circle' icon={<EditOutlined/>} key="edit-user-info" onClick={() => navigator('/user/profile')}/>
 			</div>
 			{/*// @ts-ignore*/}
 			<Menu theme="light" mode="horizontal" defaultSelectedKeys={getDefaultUrlValue(location.pathname,/dynamic|subscribe/,'all')}>
@@ -39,28 +40,28 @@ function UserInfoArea(){
 }
 function UploadBackGround({imgUrl}:any){
 
-	const [url,setUrl] = useState(imgUrl)
-	const [loading,setLoading] = useState(false)
+	// const [url,setUrl] = useState(imgUrl)
+	// const [loading,setLoading] = useState(false)
 
-	const handleChange = (info:UploadChangeParam<UploadFile>) => {
-		if (info.file.status === 'uploading') {
-			message.loading({content:'上传中',key:'uploading',duration:10})
-			setLoading(true)
-			return
-		}
-		if (info.file.status === 'done') {
-			if (info.file.response.Ok){
-				message.success({content:'上传完成',key:'uploading'})
-				setUrl(info.file.response.Path)
-			}else{
-				message.warn({content:'上传失败',key:'uploading'})
-			}
-			setLoading(false)
-		}
-	}
+	// const handleChange = (info:UploadChangeParam<UploadFile>) => {
+	// 	if (info.file.status === 'uploading') {
+	// 		message.loading({content:'上传中',key:'uploading',duration:10})
+	// 		setLoading(true)
+	// 		return
+	// 	}
+	// 	if (info.file.status === 'done') {
+	// 		if (info.file.response.Ok){
+	// 			message.success({content:'上传完成',key:'uploading'})
+	// 			setUrl(info.file.response.Path)
+	// 		}else{
+	// 			message.warn({content:'上传失败',key:'uploading'})
+	// 		}
+	// 		setLoading(false)
+	// 	}
+	// }
 	return(
 		<div className='user-background'>
-			<ImgCrop rotate aspect={7 / 2} quality={1} modalOk='确认上传' modalCancel='取消' modalTitle='裁剪图片'>
+			{/* <ImgCrop rotate aspect={7 / 2} quality={1} modalOk='确认上传' modalCancel='取消' modalTitle='裁剪图片'>
 				<Upload
 					name="background"
 					showUploadList={false}
@@ -71,8 +72,8 @@ function UploadBackGround({imgUrl}:any){
 				>
 					<Button icon={loading ? <LoadingOutlined/> : <UploadOutlined />}/>
 				</Upload>
-			</ImgCrop>
-			<img src={url}/>
+			</ImgCrop> */}
+			<img src={imgURL}/>
 		</div>
 
 	)

@@ -37,7 +37,8 @@ export default function BreadBlog(){
         <Layout className="layout">
             <Header className='box-shadow'>
                 <div className='logo_container' onClick={() => navigator('/')}>
-                    <img src={logo} alt="Index"/>
+                    {/* <img src={logo} alt="Index"/> */}
+                    <span style={{fontSize:'33px',color:'#6a30f2',fontWeight:'bold'}}>GSDNBlog</span>
                 </div>
                 <div className="header_nav_container">
                     <Input placeholder='今天想康康什么' maxLength={30} onPressEnter={({target}) => handleSearch(target)} prefix={<SearchOutlined />}/>

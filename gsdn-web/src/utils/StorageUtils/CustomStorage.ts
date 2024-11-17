@@ -18,8 +18,11 @@ class CustomStorage {
     static heartbeat:any;
 
     static getAvatarUrl():string{
-        let UserID = CustomStorage.getAccount().UserID
-        return UserID ? `/data/logo/${CustomStorage.getAccount().UserID || 'null'}` : 'https://p9-passport.byteacctimg.com/img/mosaic-legacy/3791/5035712059~300x300.image'
+        // let UserID = CustomStorage.getAccount().UserID
+        const avatar='https://p9-passport.byteacctimg.com/img/mosaic-legacy/3791/5035712059~300x300.image'
+        const user=localStorage.getItem("user");
+        if (user) return JSON.parse(user).avatar||avatar
+        else return avatar;
     }
     static getBackGroundUrl():string{
         let UserID = CustomStorage.getAccount().UserID

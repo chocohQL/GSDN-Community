@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig } from "axios";
 // import { baseURL } from "./baseURL";
-const baseURL='http://localhost:3000'
+const baseURL=''
 
 interface customConfigType{
     loadingParams?:boolean;
@@ -78,8 +78,8 @@ async function myAxios(options:AxiosRequestConfig,customConfig?:customConfigType
 
     //请求拦截器
     service.interceptors.request.use((config:any)=>{
-        const token = 'Bearer ' + window.localStorage.getItem('token');
-        if (token) config.headers.authorization = token;
+        // const token = 'Bearer ' + window.localStorage.getItem('token');
+        // if (token) config.headers.authorization = token;
         addPending(config);
         _customConfig.cancelParams&&removePending(config);
         _customConfig.loadingParams&&showLoading();

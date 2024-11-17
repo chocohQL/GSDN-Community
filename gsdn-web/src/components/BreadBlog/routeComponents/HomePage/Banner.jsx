@@ -16,7 +16,7 @@ function _HomePageBanner(){
 		<div className='home-page-banner'>
 			<div className='banner-content'>
 				<div className='text-container'>
-					<div className='blog-title'><span>BreadBlog</span></div>
+					<div className='blog-title'><span>GSDNBlog</span></div>
 					<div className='blog-description'>简约 方便</div>
 					<div>
 						{CustomStorage.getAccount().User ?
