@@ -125,11 +125,17 @@ public class AiChatMessageServiceImpl implements AiChatMessageService {
 
     @Override
     public void deleteChatMessage(Long id) {
-        aiChatMessageMapper.deleteById(id);
+        AiChatMessage aiChatMessage = aiChatMessageMapper.selectById(id);
+        if (aiChatMessage != null && aiChatMessage.getUserId() == StpUtil.getLoginIdAsLong()) {
+            aiChatMessageMapper.deleteById(id);
+        }
     }
 
     @Override
     public void deleteChatMessageByConversationId(Long conversationId) {
-        aiChatMessageMapper.deleteByConversationId(conversationId);
+        AiChatConversation aiChatConversation = aiChatConversationService.getConversation(conversationId);
+        if (aiChatConversation != null && aiChatConversation.getUserId() == StpUtil.getLoginIdAsLong()) {
+            aiChatMessageMapper.deleteByConversationId(conversationId);
+        }
     }
 }

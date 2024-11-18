@@ -3,6 +3,7 @@ package com.gdut.www.controller;
 import com.gdut.www.domain.dto.AiChatConversationReq;
 import com.gdut.www.domain.model.Response;
 import com.gdut.www.service.AiChatConversationService;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -26,12 +27,12 @@ public class AiChatConversationController {
     }
 
     @PostMapping("/create")
-    public Response createConversation(AiChatConversationReq req) {
+    public Response createConversation(@RequestBody @Validated AiChatConversationReq req) {
         return success(chatConversationService.createConversation(req));
     }
 
     @PostMapping("/update")
-    public Response updateConversation(AiChatConversationReq req) {
+    public Response updateConversation(@RequestBody AiChatConversationReq req) {
         chatConversationService.updateConversation(req);
         return success();
     }

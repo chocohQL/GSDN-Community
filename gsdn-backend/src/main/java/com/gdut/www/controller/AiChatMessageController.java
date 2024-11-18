@@ -5,6 +5,7 @@ import com.gdut.www.domain.dto.AiChatMessageReq;
 import com.gdut.www.service.AiChatConversationService;
 import com.gdut.www.service.AiChatMessageService;
 import org.springframework.http.MediaType;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 
@@ -21,7 +22,7 @@ public class AiChatMessageController {
     private AiChatConversationService chatConversationService;
 
     @PostMapping(value = "/send-stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<Response> sendChatMessageStream(@RequestBody AiChatMessageReq req) {
+    public Flux<Response> sendChatMessageStream(@RequestBody @Validated AiChatMessageReq req) {
         return chatMessageService.sendChatMessageStream(req);
     }
 
@@ -30,13 +31,13 @@ public class AiChatMessageController {
         return success(chatConversationService.getConversation(conversationId) == null ? null : chatMessageService.getChatMessageListByConversationId(conversationId));
     }
 
-    @DeleteMapping("/delete")
+    @PostMapping("/delete")
     public Response deleteChatMessage(@RequestParam("id") Long id) {
         chatMessageService.deleteChatMessage(id);
         return success();
     }
 
-    @DeleteMapping("/delete-by-conversation-id")
+    @PostMapping("/delete-by-conversation-id")
     public Response deleteChatMessageByConversationId(@RequestParam("conversationId") Long conversationId) {
         chatMessageService.deleteChatMessageByConversationId(conversationId);
         return success();

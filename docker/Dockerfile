@@ -1,4 +1,4 @@
-FROM openjdk:8-oracle
+FROM openjdk:17-oracle
 MAINTAINER chocoh
 VOLUME /tmp
 ADD gsdn-community.jar /gsdn-community.jar

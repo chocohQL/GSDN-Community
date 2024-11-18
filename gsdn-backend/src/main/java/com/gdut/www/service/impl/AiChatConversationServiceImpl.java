@@ -1,6 +1,7 @@
 package com.gdut.www.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.util.StrUtil;
 import com.gdut.www.domain.dto.AiChatConversationReq;
 import com.gdut.www.domain.entity.AiChatConversation;
 import com.gdut.www.mapper.AiChatConversationMapper;
@@ -21,7 +22,7 @@ public class AiChatConversationServiceImpl implements AiChatConversationService 
     @Override
     public Long createConversation(AiChatConversationReq req) {
         AiChatConversation aiChatConversation = new AiChatConversation();
-        aiChatConversation.setTitle(req.getTitle());
+        aiChatConversation.setTitle(StrUtil.nullToDefault(req.getTitle(), AiChatConversation.TITLE_DEFAULT));
         aiChatConversation.setUserId(StpUtil.getLoginIdAsLong());
         aiChatConversationMapper.insert(aiChatConversation);
         return aiChatConversation.getId();
@@ -29,8 +30,14 @@ public class AiChatConversationServiceImpl implements AiChatConversationService 
 
     @Override
     public void updateConversation(AiChatConversationReq req) {
+        if (req.getId() == null) {
+            return;
+        }
         AiChatConversation aiChatConversation = aiChatConversationMapper.selectById(req.getId());
-        aiChatConversation.setTitle(req.getTitle());
+        if (aiChatConversation == null || aiChatConversation.getUserId() != StpUtil.getLoginIdAsLong()) {
+            return;
+        }
+        aiChatConversation.setTitle(req.getTitle() == null ? aiChatConversation.getTitle() : req.getTitle());
         aiChatConversationMapper.updateById(aiChatConversation);
     }
 
@@ -46,6 +53,10 @@ public class AiChatConversationServiceImpl implements AiChatConversationService 
 
     @Override
     public void deleteConversation(Long id) {
+        AiChatConversation aiChatConversation = aiChatConversationMapper.selectById(id);
+        if (aiChatConversation == null || aiChatConversation.getUserId() != StpUtil.getLoginIdAsLong()) {
+            return;
+        }
         aiChatMessageService.deleteChatMessageByConversationId(id);
         aiChatConversationMapper.deleteById(id);
     }
