@@ -45,20 +45,21 @@ public class AiChatMessageServiceImpl implements AiChatMessageService {
 
     @Override
     public Flux<Response> sendChatMessageStream(AiChatMessageReq aiChatMessageReq) {
+        // 获取会话
         AiChatConversation conversation = aiChatConversationService.getConversation(aiChatMessageReq.getConversationId());
         if (conversation == null) {
             throw new RuntimeException(AI_CONVERSATION_NOT_EXISTS);
         }
+        // 构建聊天上下文
         List<AiChatMessage> historyMessages = aiChatMessageMapper.selectListByConversationId(conversation.getId());
-
         Long userId = StpUtil.getLoginIdAsLong();
         AiChatMessage userMessage = createChatMessage(conversation.getId(), userId, null, aiChatMessageReq.getContent(), MessageType.USER);
         AiChatMessage assistantMessage = createChatMessage(conversation.getId(), userId, userMessage.getId(), "", MessageType.ASSISTANT);
-
         Prompt prompt = buildPrompt(historyMessages, aiChatMessageReq);
-
+        // 发送请求
         Flux<ChatResponse> streamResponse = chatModel.stream(prompt);
         StringBuffer contentBuffer = new StringBuffer();
+        // 流式返回
         return streamResponse.map(chunk -> {
                     String newContent = chunk.getResult() != null ? chunk.getResult().getOutput().getContent() : null;
                     contentBuffer.append(StrUtil.nullToDefault(newContent, ""));
@@ -78,8 +79,11 @@ public class AiChatMessageServiceImpl implements AiChatMessageService {
 
     private Prompt buildPrompt(List<AiChatMessage> messages, AiChatMessageReq sendReqVO) {
         List<Message> chatMessages = new ArrayList<>();
+        // 系统消息
         chatMessages.add(new SystemMessage(AI_SYSTEM_VALUE));
+        // 上下文消息
         filterContextMessages(messages).forEach(message -> chatMessages.add(AiUtil.buildMessage(message.getType(), message.getContent())));
+        // 用户消息
         chatMessages.add(new UserMessage(sendReqVO.getContent()));
         return new Prompt(chatMessages, new TongYiChatOptions());
     }
